@@ -1,23 +1,39 @@
-## Getting Started
+# web
 
-First, run the development server:
+This template should help get you started developing with Vue 3 in Vite.
 
-```bash
-pnpm dev
+## Recommended IDE Setup
+
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+
+## Type Support for `.vue` Imports in TS
+
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vite.dev/config/).
+
+## Project Setup
+
+```sh
+bun install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Compile and Hot-Reload for Development
 
-You can start editing the page by modifying `src/app.vue`. The page auto-updates as you edit the file.
+```sh
+bun dev
+```
 
-## Learn More
+### Type-Check, Compile and Minify for Production
 
-To learn more about Vue3, take a look at the following resources:
+```sh
+bun run build
+```
 
-- [Vue Official Documentation](https://vuejs.org/guide/) - learn about Vue framework for building web user interfaces.
+### Lint with [ESLint](https://eslint.org/)
 
-## Deploy on Vercel
-
-You can easily deploy your Vue app by using the [Vercel Platform](https://vercel.com/new?utm_source=github.com&utm_medium=referral&utm_campaign=turborepo-readme).
-
-Check out our [Vite deployment documentation](https://vercel.com/docs/frameworks/vite) for more details.
+```sh
+bun lint
+```

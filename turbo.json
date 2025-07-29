@@ -4,12 +4,19 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".nuxt/**", ".output/**", "dist/**"]
+      "outputs": [".output/**", "dist/**"]
     },
     "lint": {},
     "dev": {
       "cache": false,
       "persistent": true
-    }
+    },
+    "format": {},
+    "preview": {
+      "cache": false,
+      "persistent": true
+    },
+    "type-check": {},
+    "check-types": {}
   }
 }
