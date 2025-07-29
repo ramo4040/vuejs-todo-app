@@ -12,6 +12,7 @@
       "persistent": true
     },
     "format": {},
+    "serve": {},
     "preview": {
       "cache": false,
       "persistent": true
