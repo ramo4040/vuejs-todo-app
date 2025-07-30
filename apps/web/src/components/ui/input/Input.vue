@@ -1,9 +1,22 @@
 <template>
-  <input v-bind="$attrs" class="shadcn-input" />
+  <input
+    :value="modelValue"
+    @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+    v-bind="$attrs"
+    class="shadcn-input"
+  />
 </template>
 
 <script setup lang="ts">
-// Basic input component for shadcn/ui
+interface Props {
+  modelValue?: string
+}
+
+defineProps<Props>()
+
+defineEmits<{
+  'update:modelValue': [value: string]
+}>()
 </script>
 
 <style scoped>

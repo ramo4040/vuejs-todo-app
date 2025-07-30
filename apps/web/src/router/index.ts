@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AuthLayout from '@/layouts/AuthLayout.vue'
+import { AuthLayout, DashboardLayout } from '@/layouts'
 import { Register, Login, ForgotPassword, ResetPassword, DashboardPage } from '@/pages'
 import { useAuthStore } from '@/entities/auth'
 import { tokenManager } from '@/shared/api'
@@ -9,6 +9,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      redirect: '/auth/login',
       component: AuthLayout,
       children: [
         {
@@ -35,9 +36,15 @@ const router = createRouter({
     },
     {
       path: '/dashboard',
-      name: 'Dashboard',
-      component: DashboardPage,
-      meta: { requiresAuth: true },
+      component: DashboardLayout,
+      children: [
+        {
+          path: '/dashboard',
+          name: 'Dashboard',
+          component: DashboardPage,
+          meta: { requiresAuth: true },
+        },
+      ],
     },
   ],
 })
@@ -47,8 +54,7 @@ router.beforeEach(async (to, from, next) => {
   const token = tokenManager.get()
 
   if (!auth.user && token) {
-    const test = await auth.getUser()
-    console.log('Fetched user:', test)
+    await auth.getUser()
   }
 
   if (auth.user && to.path.startsWith('/auth')) {

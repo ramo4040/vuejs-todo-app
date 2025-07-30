@@ -17,13 +17,6 @@ export const tokenManager = {
   remove: () => localStorage.removeItem('auth_token'),
 }
 
-// Navigation callback for handling redirects
-let navigationCallback: ((path: string) => void) | null = null
-
-export const setNavigationCallback = (callback: (path: string) => void) => {
-  navigationCallback = callback
-}
-
 // Request interceptor
 api.interceptors.request.use((config) => {
   const token = tokenManager.get()
@@ -39,7 +32,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes('/auth/refresh')
+    ) {
       originalRequest._retry = true
 
       try {
