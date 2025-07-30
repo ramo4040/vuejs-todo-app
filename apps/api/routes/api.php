@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TodoController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -21,7 +22,12 @@ Route::middleware('jwt')->prefix('auth')->group(function () {
 
 
 Route::middleware('jwt')->group(function () {
+    // categories routes
     Route::apiResource('categories', CategoryController::class)->except([
         'show'
     ]);
+
+    // Todo routes
+    Route::apiResource('todos', TodoController::class)->except(['index', 'show']);
+    Route::get('/categories/{category}/todos', [TodoController::class, 'index']);
 });
