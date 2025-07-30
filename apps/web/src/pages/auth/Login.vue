@@ -3,13 +3,17 @@ import { useForm } from 'vee-validate'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { loginSchema } from './schemas'
+import { loginSchema } from '../../entities/auth/config'
 import { authValidationConfig } from './config/validation'
 import { loginFields } from './config/fields'
+import { useAuthStore } from '@/entities/auth'
+import { useRouter } from 'vue-router'
 
 authValidationConfig()
+const { login } = useAuthStore()
+const router = useRouter()
 
-const { handleSubmit, values } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: loginSchema,
   initialValues: {
     email: '',
@@ -18,8 +22,9 @@ const { handleSubmit, values } = useForm({
   validateOnMount: false,
 })
 
-const onSubmit = handleSubmit((values) => {
-  console.log('Login form submitted!', values)
+const onSubmit = handleSubmit(async (values) => {
+  await login(values)
+  router.push({ name: 'Dashboard' })
 })
 </script>
 

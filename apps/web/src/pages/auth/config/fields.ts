@@ -47,7 +47,7 @@ export const resetPasswordFields: FormField[] = [
 
 export const registerStep1Fields: FormField[] = [
   {
-    name: 'fullname',
+    name: 'full_name',
     label: 'Full Name',
     type: 'text',
     placeholder: 'Enter your full name',
@@ -74,7 +74,7 @@ export const registerStep2Fields: FormField[] = [
     placeholder: 'Enter password',
   },
   {
-    name: 'confirmPassword',
+    name: 'password_confirmation',
     label: 'Confirm Password',
     type: 'password',
     placeholder: 'Confirm your password',
