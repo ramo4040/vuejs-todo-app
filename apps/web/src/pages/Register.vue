@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import AuthLayout from '@/layouts/AuthLayout.vue'
 import { useForm, configure } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
@@ -102,10 +101,12 @@ const onSubmit = handleSubmit((values) => {
 </script>
 
 <template>
-  <AuthLayout
-    title="Create your account"
-    description="Start organizing your tasks and stay productive every day."
-  >
+  <div>
+    <h1 class="text-4xl font-bold">Create your account</h1>
+    <p class="text-gray-600">Start organizing your tasks and stay productive every day.</p>
+  </div>
+
+  <div>
     <form novalidate @submit.prevent="onSubmit" class="space-y-2.5 max-w-md mx-auto">
       <FormField
         v-for="field in formFields"
@@ -134,7 +135,7 @@ const onSubmit = handleSubmit((values) => {
 
       <Button type="submit" class="mt-4 w-full cursor-pointer">Sign Up</Button>
     </form>
-  </AuthLayout>
+  </div>
 </template>
 
 <style scoped></style>

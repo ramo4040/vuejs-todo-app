@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import Logo from '@/components/ui/logo/Logo.vue'
-import type { Props } from '.'
-
-const props = defineProps<Props>()
 </script>
 
 <template>
@@ -12,14 +9,8 @@ const props = defineProps<Props>()
 
       <div class="flex-1 flex items-center justify-center">
         <div class="w-[380px] grid gap-6">
-          <div>
-            <h1 class="text-4xl font-bold">{{ props.title }}</h1>
-            <p class="text-gray-600">{{ props.description }}</p>
-          </div>
-
-          <div>
-            <slot />
-          </div>
+          <!-- Router view will render the page content here -->
+          <router-view />
         </div>
       </div>
     </div>
