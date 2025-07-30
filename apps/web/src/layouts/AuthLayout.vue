@@ -25,7 +25,7 @@ const props = defineProps<Props>()
     </div>
 
     <div class="bg-white px-15 py-10">
-      <div class="bg-red-400 h-full w-full rounded-4xl overflow-hidden relative flex items-end">
+      <div class="h-full w-full rounded-4xl overflow-hidden relative flex items-end">
         <img
           src="/auth-img.jpg"
           alt="Auth layout image"
