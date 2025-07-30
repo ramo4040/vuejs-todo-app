@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-vue-next'
+import { MoreHorizontal } from 'lucide-vue-next'
 import { useCategoriesStore, type Category } from '@/entities/categories'
 
 defineProps<{
@@ -15,7 +15,7 @@ defineProps<{
 }>()
 
 const categoriesStore = useCategoriesStore()
-const { deleteCategory, openDialog } = categoriesStore
+const { deleteCategory, openDialog, selectCategory } = categoriesStore
 
 const handleDeleteCategory = async (categoryId: number) => {
   try {
@@ -28,9 +28,12 @@ const handleDeleteCategory = async (categoryId: number) => {
 
 <template>
   <div
-    class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group"
+    :class="[
+      'flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group',
+      categoriesStore.selectedCategoryId === category.id ? 'bg-gray-50' : '',
+    ]"
   >
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 flex-1" @click="selectCategory(category.id)">
       <div
         class="w-4 h-4 rounded border-2"
         :style="{
@@ -57,15 +60,8 @@ const handleDeleteCategory = async (categoryId: number) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem @click="openDialog(category.id)">
-            <Edit class="w-4 h-4 mr-2" />
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            @click="handleDeleteCategory(category.id)"
-            class="text-red-600 focus:text-red-600"
-          >
-            <Trash2 class="w-4 h-4 mr-2" />
+          <DropdownMenuItem @click="openDialog(category.id)"> Edit </DropdownMenuItem>
+          <DropdownMenuItem variant="destructive" @click="handleDeleteCategory(category.id)">
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

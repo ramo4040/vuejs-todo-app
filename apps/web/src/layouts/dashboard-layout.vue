@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Logo from '@/components/ui/logo/Logo.vue'
 import { Button } from '@/components/ui/button'
-import CategoryFormDialog from '@/widgets/category-form-dialog.vue'
-import CategoryItem from '@/widgets/category-item.vue'
+import CategoryFormDialog from '@/widgets/category/category-form-dialog.vue'
+import CategoryItem from '@/widgets/category/category-item.vue'
 import UserProfile from '@/widgets/user-profile.vue'
 import { Plus } from 'lucide-vue-next'
 import { onMounted } from 'vue'
@@ -11,15 +11,16 @@ import { storeToRefs } from 'pinia'
 
 const categoriesStore = useCategoriesStore()
 let { categories } = storeToRefs(categoriesStore)
-const { fetchCategories, openDialog } = categoriesStore
+const { fetchCategories, openDialog, selectCategory } = categoriesStore
 
 onMounted(async () => {
   await fetchCategories()
+  selectCategory(categories.value[0]?.id)
 })
 </script>
 
 <template>
-  <div class="flex h-screen w-full">
+  <div class="flex h-screen w-full gap-10 bg-[#f6f6f6]">
     <!-- Sidebar -->
     <div class="min-w-[300px] bg-white rounded-r-4xl flex flex-col px-6 py-8">
       <!-- Logo Section -->

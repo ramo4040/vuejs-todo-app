@@ -7,13 +7,13 @@ export const useCategoriesStore = defineStore('categories', {
     categories: [],
     isEdit: null,
     isDialogOpen: false,
+    selectedCategoryId: null,
   }),
   actions: {
     async fetchCategories() {
       const response = await categoryApi.getAll()
       if (response.success) {
         this.categories = response.data || []
-        console.log(this.categories)
       }
     },
     async createCategory(payload: UpsertCategoryPayload) {
@@ -43,6 +43,9 @@ export const useCategoriesStore = defineStore('categories', {
     closeDialog() {
       this.isEdit = null
       this.isDialogOpen = false
+    },
+    selectCategory(categoryId: number) {
+      this.selectedCategoryId = categoryId
     },
   },
 })
