@@ -9,7 +9,6 @@ import Logo from '@/components/ui/logo/Logo.vue'
 
       <div class="flex-1 flex items-center justify-center">
         <div class="w-[380px] grid gap-6">
-          <!-- Router view will render the page content here -->
           <router-view />
         </div>
       </div>
