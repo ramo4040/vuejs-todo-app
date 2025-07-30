@@ -2,6 +2,7 @@ type Category = {
   id: number
   name: string
   color: string
+  todos_count: number
 }
 
 type CategoriesState = {

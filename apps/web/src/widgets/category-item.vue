@@ -41,7 +41,9 @@ const handleDeleteCategory = async (categoryId: number) => {
       <span class="text-gray-900 font-medium">{{ category.name }}</span>
     </div>
     <div class="flex items-center gap-2">
-      <Badge variant="secondary" class="bg-gray-100 text-gray-600 font-medium"> 0 </Badge>
+      <Badge variant="secondary" class="bg-gray-100 text-gray-600 font-medium">
+        {{ category.todos_count }}
+      </Badge>
 
       <!-- Dropdown Menu for Edit/Delete -->
       <DropdownMenu>
