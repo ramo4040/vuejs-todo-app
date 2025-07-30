@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import { Register, Login, ForgotPassword, ResetPassword } from '@/pages/auth'
+import { Register, Login, ForgotPassword, ResetPassword, DashboardPage } from '@/pages'
+import { useAuthStore } from '@/entities/auth'
+import { tokenManager } from '@/shared/api'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,26 +31,37 @@ const router = createRouter({
           name: 'ResetPassword',
           component: ResetPassword,
         },
-        // Redirect old routes to new auth routes
-        {
-          path: 'register',
-          redirect: '/auth/register',
-        },
-        {
-          path: 'login',
-          redirect: '/auth/login',
-        },
-        {
-          path: 'forgot-password',
-          redirect: '/auth/forgot-password',
-        },
-        {
-          path: 'reset-password',
-          redirect: '/auth/reset-password',
-        },
       ],
     },
+    {
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: DashboardPage,
+      meta: { requiresAuth: true },
+    },
   ],
+})
+
+router.beforeEach(async (to, from, next) => {
+  const auth = useAuthStore()
+  const token = tokenManager.get()
+
+  if (!auth.user && token) {
+    const test = await auth.getUser()
+    console.log('Fetched user:', test)
+  }
+
+  if (auth.user && to.path.startsWith('/auth')) {
+    next({ name: 'Dashboard' })
+    return
+  }
+
+  if (to.meta.requiresAuth && !auth.user) {
+    next({ name: 'Login' })
+    return
+  }
+
+  next()
 })
 
 export default router

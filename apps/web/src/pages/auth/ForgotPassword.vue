@@ -3,7 +3,7 @@ import { useForm } from 'vee-validate'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { forgotPasswordSchema } from './schemas'
+import { forgotPasswordSchema } from '../../entities/auth/config'
 import { authValidationConfig } from './config/validation'
 import { forgotPasswordFields } from './config/fields'
 

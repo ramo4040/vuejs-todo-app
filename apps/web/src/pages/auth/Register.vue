@@ -5,22 +5,26 @@ import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ImageUpload from '@/components/ui/image-upload/ImageUpload.vue'
-import { registerSchema } from './schemas'
+import { registerSchema } from '../../entities/auth/config'
 import { authValidationConfig } from './config/validation'
 import { registerStep1Fields, registerStep2Fields } from './config/fields'
 import { useMultiStepForm } from './utils/form'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/entities/auth'
 
 authValidationConfig()
+const router = useRouter()
+const auth = useAuthStore()
 
 const { currentTab, handleTabChange } = useMultiStepForm()
 
-const { handleSubmit, values, setFieldValue, validateField, errors } = useForm({
+const { handleSubmit, setFieldValue, validateField, errors } = useForm({
   validationSchema: registerSchema,
   initialValues: {
     email: '',
-    fullname: '',
+    full_name: '',
     password: '',
-    confirmPassword: '',
+    password_confirmation: '',
     phone: '',
     avatar: null,
   },
@@ -32,17 +36,18 @@ const handleAvatarChange = (file: File | null) => {
 }
 
 const validateStep1 = async () => {
-  await Promise.all([validateField('fullname'), validateField('email'), validateField('phone')])
+  await Promise.all([validateField('full_name'), validateField('email'), validateField('phone')])
 
   const { value } = errors
 
-  if (!value.fullname && !value.email && !value.phone) {
+  if (!value.full_name && !value.email && !value.phone) {
     currentTab.value = 'step2'
   }
 }
 
-const onSubmit = handleSubmit((values) => {
-  console.log('Form submitted!', values)
+const onSubmit = handleSubmit(async (values) => {
+  await auth.register(values)
+  router.push({ name: 'Dashboard' })
 })
 </script>
 
