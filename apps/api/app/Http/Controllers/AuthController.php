@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Responses\ApiResponse;
 use JWTAuth;
 
 class AuthController extends Controller
@@ -20,15 +21,17 @@ class AuthController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10448',
         ]);
 
-
         $user = User::create($data);
-
         $token = JWTAuth::fromUser($user);
 
-        return response()->json([
-            'token' => $token,
-            'user' => $user,
-        ], 201);
+        return ApiResponse::success(
+            'User registered successfully',
+            201,
+            [
+                'access_token' => $token,
+                'user' => $user,
+            ]
+        );
     }
 
     /**
@@ -41,10 +44,19 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return ApiResponse::unauthorized('Invalid credentials');
         }
 
-        return $this->respondWithToken($token, auth()->user());
+        return ApiResponse::success(
+            'Login successful',
+            200,
+            [
+                'access_token' => $token,
+                'user' => auth()->user(),
+                'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60
+            ]
+        );
     }
 
     /**
@@ -54,7 +66,11 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return ApiResponse::success(
+            'User profile retrieved successfully',
+            200,
+            auth()->user()
+        );
     }
 
     /**
@@ -66,7 +82,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return ApiResponse::success('Successfully logged out');
     }
 
     /**
@@ -76,23 +92,14 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token, $user = null)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'user' => $user,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
+        return ApiResponse::success(
+            'Token refreshed successfully',
+            200,
+            [
+                'access_token' => auth()->refresh(),
+                'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60
+            ]
+        );
     }
 }
