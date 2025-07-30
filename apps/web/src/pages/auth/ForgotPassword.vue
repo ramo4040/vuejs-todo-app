@@ -1,24 +1,16 @@
 <script setup lang="ts">
-import { useForm, configure } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
-import { z } from 'zod'
+import { useForm } from 'vee-validate'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { forgotPasswordSchema } from './schemas'
+import { authValidationConfig } from './config/validation'
+import { forgotPasswordFields } from './config/fields'
 
-const schema = toTypedSchema(
-  z.object({
-    email: z.string().email({ message: 'Invalid email address' }),
-  }),
-)
-
-configure({
-  validateOnInput: false,
-  validateOnBlur: false,
-})
+authValidationConfig()
 
 const { handleSubmit, values } = useForm({
-  validationSchema: schema,
+  validationSchema: forgotPasswordSchema,
   initialValues: {
     email: '',
   },
@@ -38,14 +30,19 @@ const onSubmit = handleSubmit((values) => {
 
   <div>
     <form novalidate @submit.prevent="onSubmit" class="space-y-4 max-w-md mx-auto">
-      <FormField name="email" v-slot="{ componentField }">
+      <FormField
+        v-for="field in forgotPasswordFields"
+        :key="field.name"
+        :name="field.name"
+        v-slot="{ componentField }"
+      >
         <FormItem>
-          <FormLabel>E-mail address</FormLabel>
+          <FormLabel>{{ field.label }}</FormLabel>
           <FormControl>
             <Input
               v-bind="componentField"
-              type="email"
-              placeholder="Enter your e-mail address..."
+              :type="field.type"
+              :placeholder="field.placeholder"
               class="w-full"
             />
           </FormControl>
@@ -53,16 +50,18 @@ const onSubmit = handleSubmit((values) => {
         </FormItem>
       </FormField>
 
-      <Button type="submit" class="w-full bg-gray-800 hover:bg-gray-900 text-white">
+      <Button type="submit" class="w-full bg-gray-800 hover:bg-gray-900 text-white cursor-pointer">
         Send reset link
       </Button>
 
       <div class="text-center text-sm text-gray-600">
         Back to
-        <router-link to="/login" class="font-medium text-gray-800 hover:text-gray-900"
+        <router-link to="/auth/login" class="font-medium text-gray-800 hover:text-gray-900"
           >Log in</router-link
         >
       </div>
     </form>
   </div>
 </template>
+
+<style scoped></style>

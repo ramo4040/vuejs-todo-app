@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import RegisterPage from '@/pages/Register.vue'
-import LoginPage from '@/pages/Login.vue'
-import ForgotPasswordPage from '@/pages/ForgotPassword.vue'
-import ResetPasswordPage from '@/pages/ResetPassword.vue'
+import { Register, Login, ForgotPassword, ResetPassword } from '@/pages/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,24 +10,41 @@ const router = createRouter({
       component: AuthLayout,
       children: [
         {
-          path: 'register',
+          path: 'auth/register',
           name: 'Register',
-          component: RegisterPage,
+          component: Register,
+        },
+        {
+          path: 'auth/login',
+          name: 'Login',
+          component: Login,
+        },
+        {
+          path: 'auth/forgot-password',
+          name: 'ForgotPassword',
+          component: ForgotPassword,
+        },
+        {
+          path: 'auth/reset-password',
+          name: 'ResetPassword',
+          component: ResetPassword,
+        },
+        // Redirect old routes to new auth routes
+        {
+          path: 'register',
+          redirect: '/auth/register',
         },
         {
           path: 'login',
-          name: 'Login',
-          component: LoginPage,
+          redirect: '/auth/login',
         },
         {
           path: 'forgot-password',
-          name: 'ForgotPassword',
-          component: ForgotPasswordPage,
+          redirect: '/auth/forgot-password',
         },
         {
           path: 'reset-password',
-          name: 'ResetPassword',
-          component: ResetPasswordPage,
+          redirect: '/auth/reset-password',
         },
       ],
     },

@@ -1,56 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useForm, configure } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
-import { z } from 'zod'
+import { useForm } from 'vee-validate'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ImageUpload from '@/components/ui/image-upload/ImageUpload.vue'
+import { registerSchema } from './schemas'
+import { authValidationConfig } from './config/validation'
+import { registerStep1Fields, registerStep2Fields } from './config/fields'
+import { useMultiStepForm } from './utils/form'
 
-const schema = toTypedSchema(
-  z
-    .object({
-      email: z.string().email({ message: 'Invalid email address' }),
-      fullname: z.string().min(2, { message: 'Full name is required' }),
-      password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-      confirmPassword: z.string(),
-      phone: z.string().min(10, { message: 'Phone number is required' }),
-      avatar: z
-        .instanceof(File)
-        .optional()
-        .nullable()
-        .refine(
-          (file) => {
-            if (!file) return true
-            return file.size <= 10 * 1024 * 1024
-          },
-          { message: 'File size must be less than 10MB' },
-        )
-        .refine(
-          (file) => {
-            if (!file) return true
-            return ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)
-          },
-          { message: 'Only JPEG, PNG, GIF, and WebP images are allowed' },
-        ),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords don't match",
-      path: ['confirmPassword'],
-    }),
-)
+authValidationConfig()
 
-configure({
-  validateOnInput: false,
-  validateOnBlur: false,
-})
-
-const currentTab = ref('step1')
+const { currentTab, handleTabChange } = useMultiStepForm()
 
 const { handleSubmit, values, setFieldValue, validateField, errors } = useForm({
-  validationSchema: schema,
+  validationSchema: registerSchema,
   initialValues: {
     email: '',
     fullname: '',
@@ -66,42 +31,6 @@ const handleAvatarChange = (file: File | null) => {
   setFieldValue('avatar', file)
 }
 
-const step1Fields = [
-  {
-    name: 'fullname',
-    label: 'Full Name',
-    type: 'text',
-    placeholder: 'Enter your full name',
-  },
-  {
-    name: 'email',
-    label: 'Email',
-    type: 'email',
-    placeholder: 'Enter your email',
-  },
-  {
-    name: 'phone',
-    label: 'Phone Number',
-    type: 'tel',
-    placeholder: 'Enter phone number',
-  },
-]
-
-const step2Fields = [
-  {
-    name: 'password',
-    label: 'Password',
-    type: 'password',
-    placeholder: 'Enter password',
-  },
-  {
-    name: 'confirmPassword',
-    label: 'Confirm Password',
-    type: 'password',
-    placeholder: 'Confirm your password',
-  },
-]
-
 const validateStep1 = async () => {
   await Promise.all([validateField('fullname'), validateField('email'), validateField('phone')])
 
@@ -110,11 +39,6 @@ const validateStep1 = async () => {
   if (!value.fullname && !value.email && !value.phone) {
     currentTab.value = 'step2'
   }
-}
-
-const handleTabChange = (value: string | number) => {
-  currentTab.value = String(value)
-  console.log(values)
 }
 
 const onSubmit = handleSubmit((values) => {
@@ -144,7 +68,7 @@ const onSubmit = handleSubmit((values) => {
       <form novalidate @submit.prevent="onSubmit" class="mt-6">
         <TabsContent v-show="currentTab === 'step1'" value="step1" class="space-y-2.5" force-mount>
           <FormField
-            v-for="field in step1Fields"
+            v-for="field in registerStep1Fields"
             :key="field.name"
             :name="field.name"
             v-slot="{ componentField }"
@@ -169,7 +93,7 @@ const onSubmit = handleSubmit((values) => {
 
         <TabsContent v-show="currentTab === 'step2'" value="step2" class="space-y-2.5" force-mount>
           <FormField
-            v-for="field in step2Fields"
+            v-for="field in registerStep2Fields"
             :key="field.name"
             :name="field.name"
             v-slot="{ componentField }"
@@ -215,7 +139,7 @@ const onSubmit = handleSubmit((values) => {
 
   <div class="text-center text-sm text-gray-600">
     Already have an account?
-    <router-link to="/login" class="font-medium text-gray-800 hover:text-gray-900">
+    <router-link to="/auth/login" class="font-medium text-gray-800 hover:text-gray-900">
       Log in here</router-link
     >
   </div>
