@@ -17,7 +17,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Auth::user()->categories()->latest()->get();
+        $categories = Auth::user()->categories()->withCount('todos')->latest()->get();
 
         return ApiResponse::success(
             'Categories retrieved successfully',
