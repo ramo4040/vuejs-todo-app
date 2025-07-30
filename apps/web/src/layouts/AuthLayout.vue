@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import Logo from '@/components/ui/logo/Logo.vue'
-import type { Props } from '.'
-
-const props = defineProps<Props>()
 </script>
 
 <template>
@@ -12,20 +9,13 @@ const props = defineProps<Props>()
 
       <div class="flex-1 flex items-center justify-center">
         <div class="w-[380px] grid gap-6">
-          <div>
-            <h1 class="text-4xl font-bold">{{ props.title }}</h1>
-            <p class="text-gray-600">{{ props.description }}</p>
-          </div>
-
-          <div>
-            <slot />
-          </div>
+          <router-view />
         </div>
       </div>
     </div>
 
     <div class="bg-white px-15 py-10">
-      <div class="bg-red-400 h-full w-full rounded-4xl overflow-hidden relative flex items-end">
+      <div class="h-full w-full rounded-4xl overflow-hidden relative flex items-end">
         <img
           src="/auth-img.jpg"
           alt="Auth layout image"
