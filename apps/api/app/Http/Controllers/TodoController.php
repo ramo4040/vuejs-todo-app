@@ -40,6 +40,7 @@ class TodoController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|string|max:255',
+            "is_completed" => 'boolean',
             'category_id' => [
                 'required',
                 'exists:categories,id',

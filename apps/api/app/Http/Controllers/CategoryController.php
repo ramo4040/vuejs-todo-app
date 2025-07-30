@@ -17,7 +17,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Auth::user()->categories()->withCount('todos')->latest()->get();
+        $categories = Auth::user()->categories()->withCount('todos')->orderBy('todos_count', 'desc')->get();
 
         return ApiResponse::success(
             'Categories retrieved successfully',
@@ -33,7 +33,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validate(Category::validationRules());
 
-        $category = Auth::user()->categories()->create($validated);
+        $category = Auth::user()->categories()->create($validated)->withCount('todos');
 
         return ApiResponse::success(
             'Category created successfully',
@@ -56,7 +56,7 @@ class CategoryController extends Controller
         return ApiResponse::success(
             'Category updated successfully',
             200,
-            $category
+            $category->fresh()->loadCount('todos')
         );
     }
 
