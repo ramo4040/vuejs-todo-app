@@ -11,6 +11,11 @@ class AuthService
 
     public function register(array $data)
     {
+
+        if (isset($data['image'])) {
+            $imagePath = $data['image']->store('images', 'public');
+            $data['image'] = $imagePath;
+        }
         return $this->authRepository->register($data);
     }
 
