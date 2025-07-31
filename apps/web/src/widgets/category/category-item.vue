@@ -53,11 +53,7 @@ const handleDeleteCategory = async (categoryId: number) => {
         <!-- Dropdown Menu for Edit/Delete -->
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
-            <Button
-              variant="ghost"
-              size="sm"
-              class="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6"
-            >
+            <Button variant="ghost" size="sm" class="transition-opacity p-1 h-6 w-6">
               <MoreHorizontal class="w-4 h-4 text-gray-500" />
             </Button>
           </DropdownMenuTrigger>

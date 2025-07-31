@@ -8,10 +8,13 @@ export const useCategoriesStore = defineStore('categories', {
     isEdit: null,
     isDialogOpen: false,
     selectedCategoryId: null,
+    isLoading: false,
   }),
   actions: {
     async fetchCategories() {
+      this.isLoading = true
       const response = await categoryApi.getAll()
+      this.isLoading = false
       if (response.success) {
         this.categories = response.data || []
       }

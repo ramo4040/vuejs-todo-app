@@ -8,9 +8,10 @@ import { Plus } from 'lucide-vue-next'
 import { onMounted } from 'vue'
 import { useCategoriesStore } from '@/entities/categories'
 import { storeToRefs } from 'pinia'
+import Skeleton from '@/components/ui/skeleton/Skeleton.vue'
 
 const categoriesStore = useCategoriesStore()
-let { categories } = storeToRefs(categoriesStore)
+let { categories, isLoading } = storeToRefs(categoriesStore)
 const { fetchCategories, openDialog, selectCategory } = categoriesStore
 
 onMounted(async () => {
@@ -37,7 +38,15 @@ onMounted(async () => {
           <h2 class="text-sm font-medium text-gray-600 mb-4">Categories</h2>
           <!-- Category item -->
           <div class="space-y-2">
-            <CategoryItem v-for="category in categories" :key="category.id" :category="category" />
+            <CategoryItem
+              v-if="!isLoading"
+              v-for="category in categories"
+              :key="category.id"
+              :category="category"
+            />
+            <template v-else>
+              <Skeleton class="h-8 w-full mb-2" v-for="i in 4" :key="i" />
+            </template>
           </div>
         </div>
 

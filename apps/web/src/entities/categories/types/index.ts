@@ -10,6 +10,7 @@ type CategoriesState = {
   isEdit: number | null
   isDialogOpen: boolean
   selectedCategoryId: number | null
+  isLoading?: boolean
 }
 
 type UpsertCategoryPayload = {

@@ -11,6 +11,7 @@ import { echo } from '@/lib/utils'
 import { toast } from 'vue-sonner'
 import { RouterLink } from 'vue-router'
 import { useNotificationsStore } from '@/entities/notification'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const todosStore = useTodosStore()
 const authStore = useAuthStore()
@@ -75,10 +76,14 @@ const formatDate = () => {
 
       <div class="flex flex-col gap-2 flex-1 min-h-0 overflow-auto pr-2">
         <TodoItem
+          v-if="todosStore.isLoading"
           v-for="todo in todosStore.todosMap.get(categoriesStore.selectedCategoryId as number)"
           :key="todo.id"
           :todo="todo"
         />
+        <template v-else>
+          <Skeleton class="h-8 w-full mb-1" v-for="i in 4" :key="i" />
+        </template>
       </div>
     </div>
 

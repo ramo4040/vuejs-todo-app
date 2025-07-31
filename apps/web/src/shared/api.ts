@@ -42,12 +42,14 @@ api.interceptors.response.use(
       try {
         const { data } = await authApi.refreshToken()
 
-        if (data) {
+        if (data?.access_token) {
           tokenManager.set(data.access_token)
-          axios.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`
-        }
 
-        return axios(originalRequest)
+          api.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`
+          originalRequest.headers['Authorization'] = `Bearer ${data.access_token}`
+
+          return api(originalRequest)
+        }
       } catch (refreshError) {}
     }
 
