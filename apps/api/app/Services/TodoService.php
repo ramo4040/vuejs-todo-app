@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\TodoRepository;
 use App\Models\Todo;
-use App\Models\User;
 
 class TodoService
 {
@@ -16,9 +15,9 @@ class TodoService
         return $this->todoRepository->getTodosByCategory($category);
     }
 
-    public function createTodo(User $user, $data)
+    public function createTodo($data)
     {
-        return $this->todoRepository->createTodo($user, $data);
+        return $this->todoRepository->createTodo($data);
     }
 
     public function updateTodo(Todo $todo, $data)
