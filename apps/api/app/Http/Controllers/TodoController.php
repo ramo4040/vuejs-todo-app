@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TodoCreated;
 use App\Http\Responses\ApiResponse;
 use App\Models\Todo;
 use App\Models\Category;
+use App\Services\TodoService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -15,17 +17,16 @@ class TodoController extends Controller
 {
     use AuthorizesRequests;
 
+
+    public function __construct(protected TodoService $todoService) {}
+
     /**
      * Display a listing of todos for a specific category.
      */
     public function index(Category $category): JsonResponse
     {
         $this->authorize('view', $category);
-
-        $todos = $category->todos()
-            ->orderBy('created_at', 'desc')
-            ->get();
-
+        $todos = $this->todoService->getTodosByCategory($category);
         return ApiResponse::success(
             'Todos retrieved successfully',
             200,
@@ -40,6 +41,7 @@ class TodoController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|string|max:255',
+            "is_completed" => 'boolean',
             'category_id' => [
                 'required',
                 'exists:categories,id',
@@ -47,8 +49,9 @@ class TodoController extends Controller
             ],
         ]);
 
-        $todo = Auth::user()->todos()->create($data);
+        $todo = $this->todoService->createTodo(Auth::user(), $data);
 
+        event(new TodoCreated($todo));
         return ApiResponse::success(
             'Todo created successfully',
             201,
@@ -74,7 +77,7 @@ class TodoController extends Controller
             ],
         ]);
 
-        $todo->update($data);
+        $todo = $this->todoService->updateTodo($todo, $data);
 
         return ApiResponse::success(
             'Todo updated successfully',
@@ -90,7 +93,7 @@ class TodoController extends Controller
     {
         $this->authorize('delete', $todo);
 
-        $todo->delete();
+        $this->todoService->deleteTodo($todo);
 
         return ApiResponse::success(
             'Todo deleted successfully',
