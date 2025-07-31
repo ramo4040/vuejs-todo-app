@@ -40,7 +40,7 @@ export const registerSchemaBase = z
     password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
     password_confirmation: z.string(),
     phone: z.string().min(10, { message: 'Phone number is required' }),
-    avatar: z
+    image: z
       .instanceof(File)
       .optional()
       .nullable()

@@ -8,10 +8,13 @@ export const useCategoriesStore = defineStore('categories', {
     isEdit: null,
     isDialogOpen: false,
     selectedCategoryId: null,
+    isLoading: false,
   }),
   actions: {
     async fetchCategories() {
+      this.isLoading = true
       const response = await categoryApi.getAll()
+      this.isLoading = false
       if (response.success) {
         this.categories = response.data || []
       }
@@ -33,6 +36,7 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async deleteCategory(id: number) {
       const response = await categoryApi.delete(id)
+      if (this.selectedCategoryId === id) this.selectedCategoryId = null
       if (response.success) this.categories = this.categories.filter((c) => c.id !== id)
       return response
     },

@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
 
       return response
     },
-    async register(payload: RegisterData) {
+    async register(payload: FormData) {
       const response = await authApi.register(payload)
       const { data } = response
 
@@ -32,10 +32,9 @@ export const useAuthStore = defineStore('auth', {
       return response
     },
     async logout() {
-      this.user = null
-      const response = await authApi.logout()
+      await authApi.logout()
       tokenManager.remove()
-      return response
+      this.user = null
     },
     async getUser() {
       const response = await authApi.getUser()

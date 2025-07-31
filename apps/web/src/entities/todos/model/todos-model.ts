@@ -8,13 +8,16 @@ export const useTodosStore = defineStore('todos', {
     todosMap: new Map<number, Todo[]>(),
     isEdit: null as number | null,
     isDialogOpen: false,
+    isLoading: false,
   }),
   actions: {
     async fetchTodosByCategory(categoryId: number) {
       const existingTodos = this.todosMap.get(categoryId)
+      this.isLoading = true
 
       if (!existingTodos) {
         const response = await todoApi.getByCategory(categoryId)
+        this.isLoading = false
         if (response.success) {
           this.todosMap.set(categoryId, response.data || [])
         }
