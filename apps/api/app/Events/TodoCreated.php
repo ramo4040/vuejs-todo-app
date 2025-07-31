@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Todo;
+use App\Notifications\TaskCreatedNotification;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -13,11 +14,15 @@ class TodoCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $todo;
 
-    public function __construct(Todo $todo)
+    public $desc;
+
+    public function __construct(public Todo $todo)
     {
-        $this->todo = $todo;
+        $title = $todo->title;
+        $category = $todo->category->name;
+        $this->desc = 'Title: ' . mb_substr($title, 0, 50) . (mb_strlen($title) > 50 ? '...' : '') . ' | Category: ' . $category;
+        $todo->user->notify(new TaskCreatedNotification($this->desc));
     }
 
     public function broadcastOn()
@@ -32,9 +37,9 @@ class TodoCreated implements ShouldBroadcast
 
     public function broadcastWith()
     {
+
         return [
-            'title' => $this->todo->title,
-            'category' => $this->todo->category->name,
+            'description' => $this->desc,
             'message' => 'Todo created successfully',
         ];
     }
