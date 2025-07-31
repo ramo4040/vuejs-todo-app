@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-vue-next'
+import { Plus, Bell } from 'lucide-vue-next'
 import TodoItem from '@/widgets/todo/todo-item.vue'
 import { useTodosStore } from '@/entities/todos'
 import { useCategoriesStore } from '@/entities/categories'
@@ -8,13 +8,15 @@ import { onMounted, watch } from 'vue'
 import TodoFormDialog from '@/widgets/todo/todo-form-dialog.vue'
 import { useAuthStore } from '@/entities/auth'
 import { echo } from '@/lib/utils'
-import Sonner from '@/components/ui/sonner/Sonner.vue'
 import { toast } from 'vue-sonner'
+import { RouterLink } from 'vue-router'
+import { useNotificationsStore } from '@/entities/notification'
 
 const todosStore = useTodosStore()
 const authStore = useAuthStore()
 const { fetchTodosByCategory, openDialog } = todosStore
 const categoriesStore = useCategoriesStore()
+const notificationsStore = useNotificationsStore()
 
 watch(
   () => categoriesStore.selectedCategoryId,
@@ -25,15 +27,14 @@ watch(
   },
 )
 
-onMounted(() => {
-  echo
-    .channel('todos')
-    .listen('.task.created', (e: { title: string; category: string; message: string }) => {
-      toast.success(e.message, {
-        position: 'top-center',
-        description: `Title: ${e.title.slice(0, 50)}${e.title.length > 50 ? '...' : ''} | Category: ${e.category}`,
-      })
+onMounted(async () => {
+  await notificationsStore.fetchUnreadCount()
+  echo.channel('todos').listen('.task.created', (e: { description: string; message: string }) => {
+    toast.success(e.message, {
+      position: 'top-center',
+      description: e.description,
     })
+  })
 })
 
 const formatDate = () => {
@@ -50,13 +51,26 @@ const formatDate = () => {
 <template>
   <div class="flex flex-col gap-2.5 h-full pb-10">
     <div class="flex flex-col gap-9 flex-1 overflow-hidden pb-0 pl-2.5 pr-20 pt-20">
-      <div class="font-medium">
-        <h1 class="text-4xl text-black mb-2 tracking-wide">
-          Hello, {{ authStore.user?.full_name }} 👋
-        </h1>
-        <p class="text-xl text-gray-500">
-          {{ formatDate() }}
-        </p>
+      <div class="font-medium flex items-center justify-between mb-2">
+        <div>
+          <h1 class="text-4xl text-black tracking-wide">
+            Hello, {{ authStore.user?.full_name }} 👋
+          </h1>
+          <p class="text-xl text-gray-500">
+            {{ formatDate() }}
+          </p>
+        </div>
+        <div class="relative flex items-center ml-4">
+          <RouterLink to="/dashboard/notifications" class="flex items-center">
+            <Button variant="outline" size="icon" class="relative p-2 rounded-full cursor-pointer">
+              <Bell class="text-gray-600" />
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-white"
+                >{{ notificationsStore.unreadCount }}</span
+              >
+            </Button>
+          </RouterLink>
+        </div>
       </div>
 
       <div class="flex flex-col gap-2 flex-1 min-h-0 overflow-auto pr-2">
