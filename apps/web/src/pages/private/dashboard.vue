@@ -30,6 +30,7 @@ watch(
 
 onMounted(async () => {
   await notificationsStore.fetchUnreadCount()
+
   echo.channel('todos').listen('.task.created', (e: { description: string; message: string }) => {
     toast.success(e.message, {
       position: 'top-center',
@@ -75,24 +76,27 @@ const formatDate = () => {
       </div>
 
       <div class="flex flex-col gap-2 flex-1 min-h-0 overflow-auto pr-2">
+        <template v-if="todosStore.isLoading && categoriesStore.selectedCategoryId">
+          <Skeleton class="h-8 w-full mb-1" v-for="i in 4" :key="i" />
+        </template>
+
         <TodoItem
-          v-if="todosStore.isLoading"
+          v-else
           v-for="todo in todosStore.todosMap.get(categoriesStore.selectedCategoryId as number)"
           :key="todo.id"
           :todo="todo"
         />
-        <template v-else>
-          <Skeleton class="h-8 w-full mb-1" v-for="i in 4" :key="i" />
-        </template>
       </div>
     </div>
 
-    <div class="flex items-center justify-center p-2.5">
-      <Button variant="default" class="cursor-pointer" @click="openDialog()">
-        <Plus class="w-6 h-6" />
-        <span class="text-base tracking-wide">Create new task</span>
-      </Button>
-    </div>
+    <template v-if="categoriesStore.selectedCategoryId">
+      <div class="flex items-center justify-center p-2.5">
+        <Button variant="default" class="cursor-pointer" @click="openDialog()">
+          <Plus class="w-6 h-6" />
+          <span class="text-base tracking-wide">Create new task</span>
+        </Button>
+      </div>
+    </template>
   </div>
 
   <TodoFormDialog />

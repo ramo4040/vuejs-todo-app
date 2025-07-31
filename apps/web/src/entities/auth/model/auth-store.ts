@@ -32,10 +32,9 @@ export const useAuthStore = defineStore('auth', {
       return response
     },
     async logout() {
-      this.user = null
-      const response = await authApi.logout()
+      await authApi.logout()
       tokenManager.remove()
-      return response
+      this.user = null
     },
     async getUser() {
       const response = await authApi.getUser()

@@ -13,10 +13,11 @@ export const useTodosStore = defineStore('todos', {
   actions: {
     async fetchTodosByCategory(categoryId: number) {
       const existingTodos = this.todosMap.get(categoryId)
+      this.isLoading = true
 
       if (!existingTodos) {
         const response = await todoApi.getByCategory(categoryId)
-        this.isLoading = true
+        this.isLoading = false
         if (response.success) {
           this.todosMap.set(categoryId, response.data || [])
         }
