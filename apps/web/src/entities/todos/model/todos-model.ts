@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Todo, CreateTodoDto, UpdateTodoDto } from '../types'
 import { todoApi } from '../api'
+import { useCategoriesStore } from '@/entities/categories'
 
 export const useTodosStore = defineStore('todos', {
   state: () => ({
@@ -25,6 +26,11 @@ export const useTodosStore = defineStore('todos', {
         const categoryId = response.data.category_id
         const todos = this.todosMap.get(categoryId) || []
         this.todosMap.set(categoryId, [response.data, ...todos])
+
+        const categoriesStore = useCategoriesStore()
+        const category = categoriesStore.categories.find((c) => c.id === categoryId)
+        if (category) category.todos_count++
+
         this.closeDialog()
       }
     },
@@ -54,8 +60,12 @@ export const useTodosStore = defineStore('todos', {
           categoryId,
           todos.filter((t) => t.id !== id),
         )
+        const categoriesStore = useCategoriesStore()
+        const category = categoriesStore.categories.find((c) => c.id === categoryId)
+        if (category && category.todos_count > 0) {
+          category.todos_count--
+        }
       }
-      return response
     },
     openDialog(todoId?: number) {
       this.isDialogOpen = true

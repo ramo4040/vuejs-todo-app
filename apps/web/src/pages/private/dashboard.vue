@@ -4,9 +4,12 @@ import { Plus } from 'lucide-vue-next'
 import TodoItem from '@/widgets/todo/todo-item.vue'
 import { useTodosStore } from '@/entities/todos'
 import { useCategoriesStore } from '@/entities/categories'
-import { watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import TodoFormDialog from '@/widgets/todo/todo-form-dialog.vue'
 import { useAuthStore } from '@/entities/auth'
+import { echo } from '@/lib/utils'
+import Sonner from '@/components/ui/sonner/Sonner.vue'
+import { toast } from 'vue-sonner'
 
 const todosStore = useTodosStore()
 const authStore = useAuthStore()
@@ -21,6 +24,17 @@ watch(
     }
   },
 )
+
+onMounted(() => {
+  echo
+    .channel('todos')
+    .listen('.task.created', (e: { title: string; category: string; message: string }) => {
+      toast.success(e.message, {
+        position: 'top-center',
+        description: `Title: ${e.title.slice(0, 50)}${e.title.length > 50 ? '...' : ''} | Category: ${e.category}`,
+      })
+    })
+})
 
 const formatDate = () => {
   const now = new Date()
@@ -45,7 +59,7 @@ const formatDate = () => {
         </p>
       </div>
 
-      <div class="flex flex-col gap-2 flex-1 min-h-0">
+      <div class="flex flex-col gap-2 flex-1 min-h-0 overflow-auto pr-2">
         <TodoItem
           v-for="todo in todosStore.todosMap.get(categoriesStore.selectedCategoryId as number)"
           :key="todo.id"

@@ -85,8 +85,6 @@ const onSubmit = handleSubmit(async (values) => {
       await updateTodo(isEdit.value, todo)
     } else {
       categoriesStore.selectedCategoryId && (await createTodo(todo))
-      const category = categoriesStore.categories.find((c) => c.id === categoryId)
-      if (category) category.todos_count++
     }
   }
 

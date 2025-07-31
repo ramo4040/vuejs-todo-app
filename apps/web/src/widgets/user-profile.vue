@@ -3,12 +3,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { LogOut } from 'lucide-vue-next'
 import { useAuthStore } from '@/entities/auth'
+import { useRouter } from 'vue-router'
 
 const { user, logout } = useAuthStore()
+const router = useRouter()
 
 const handleLogout = async () => {
   try {
     await logout()
+    router.push({ name: 'Login' })
   } catch (error) {
     console.error('Logout failed:', error)
   }
