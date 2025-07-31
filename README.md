@@ -13,6 +13,9 @@ apps/
 
 You split your code into layers. You keep business logic in entities. You build pages for routing. Widgets hold bigger UI blocks. Shared-libs holds utilities and types you use everywhere.
 
+ 
+### [Figma Design](https://www.figma.com/proto/YuDILE2KUlZi9qhhK8ITNt/todo-app?page-id=0%3A1&node-id=1-2&p=f&viewport=120%2C250%2C0.2&t=OGcoGIhG38wfC9vv-1&scaling=contain&content-scaling=fixed)
+
 ### How to start
 
 Run this to install everything:
