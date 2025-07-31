@@ -1,6 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { AuthLayout, DashboardLayout } from '@/layouts'
-import { Register, Login, ForgotPassword, ResetPassword, DashboardPage } from '@/pages'
+import {
+  Register,
+  Login,
+  ForgotPassword,
+  ResetPassword,
+  DashboardPage,
+  NotificationsPage,
+} from '@/pages'
 import { useAuthStore } from '@/entities/auth'
 import { tokenManager } from '@/shared/api'
 
@@ -42,6 +49,12 @@ const router = createRouter({
           path: '/dashboard',
           name: 'Dashboard',
           component: DashboardPage,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: '/dashboard/notifications',
+          name: 'DashboardNotifications',
+          component: NotificationsPage,
           meta: { requiresAuth: true },
         },
       ],
