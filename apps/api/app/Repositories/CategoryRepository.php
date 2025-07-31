@@ -4,17 +4,18 @@ namespace App\Repositories;
 
 use App\Models\Category;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryRepository
 {
-    public function getUserCategoriesWithTodosCount(User $user)
+    public function getUserCategoriesWithTodosCount()
     {
-        return $user->categories()->withCount('todos')->orderBy('todos_count', 'desc')->get();
+        return Auth::user()->categories()->withCount('todos')->orderBy('todos_count', 'desc')->get();
     }
 
-    public function createCategory(User $user, $data)
+    public function createCategory($data)
     {
-        return $user->categories()->create($data)->loadCount('todos');
+        return Auth::user()->categories()->create($data)->loadCount('todos');
     }
 
     public function updateCategory(Category $category, $data)

@@ -21,7 +21,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = $this->categoryService->getCategoriesWithTodosCount(Auth::user());
+        $categories = $this->categoryService->getCategoriesWithTodosCount();
         return ApiResponse::success(
             'Categories retrieved successfully',
             200,
@@ -35,7 +35,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate(Category::validationRules());
-        $category = $this->categoryService->createCategory(Auth::user(), $validated);
+        $category = $this->categoryService->createCategory($validated);
         return ApiResponse::success(
             'Category created successfully',
             201,

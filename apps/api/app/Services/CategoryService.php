@@ -11,14 +11,14 @@ class CategoryService
 
     public function __construct(protected CategoryRepository $categoryRepository) {}
 
-    public function getCategoriesWithTodosCount(User $user)
+    public function getCategoriesWithTodosCount()
     {
-        return $this->categoryRepository->getUserCategoriesWithTodosCount($user);
+        return $this->categoryRepository->getUserCategoriesWithTodosCount();
     }
 
-    public function createCategory(User $user, $data)
+    public function createCategory($data)
     {
-        return $this->categoryRepository->createCategory($user, $data);
+        return $this->categoryRepository->createCategory($data);
     }
 
     public function updateCategory(Category $category, $data)

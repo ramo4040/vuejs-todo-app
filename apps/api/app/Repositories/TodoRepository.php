@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Todo;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class TodoRepository
 {
@@ -12,11 +13,11 @@ class TodoRepository
         return $category->todos()->orderBy('created_at', 'desc')->get();
     }
 
-    public function createTodo(User $user, $data)
+    public function createTodo($data)
     {
-        $user =  $user->todos()->create($data);
-        $user->load('category');
-        return $user;
+        $todo =  Auth::user()->todos()->create($data);
+        $todo->load('category');
+        return $todo;
     }
 
     public function updateTodo(Todo $todo, $data)

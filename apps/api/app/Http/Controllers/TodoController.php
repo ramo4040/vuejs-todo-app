@@ -49,7 +49,7 @@ class TodoController extends Controller
             ],
         ]);
 
-        $todo = $this->todoService->createTodo(Auth::user(), $data);
+        $todo = $this->todoService->createTodo($data);
 
         event(new TodoCreated($todo));
         return ApiResponse::success(
