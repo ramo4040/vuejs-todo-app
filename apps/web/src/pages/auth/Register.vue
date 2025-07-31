@@ -26,13 +26,13 @@ const { handleSubmit, setFieldValue, validateField, errors } = useForm({
     password: '',
     password_confirmation: '',
     phone: '',
-    avatar: null,
+    image: null,
   },
   validateOnMount: false,
 })
 
 const handleAvatarChange = (file: File | null) => {
-  setFieldValue('avatar', file)
+  setFieldValue('image', file)
 }
 
 const validateStep1 = async () => {
@@ -46,7 +46,13 @@ const validateStep1 = async () => {
 }
 
 const onSubmit = handleSubmit(async (values) => {
-  await auth.register(values)
+  const formData = new FormData()
+  Object.entries(values).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      formData.append(key, value)
+    }
+  })
+  await auth.register(formData)
   router.push({ name: 'Dashboard' })
 })
 </script>
@@ -116,7 +122,7 @@ const onSubmit = handleSubmit(async (values) => {
             </FormItem>
           </FormField>
 
-          <FormField name="avatar" v-slot="{ componentField }">
+          <FormField name="image" v-slot="{ componentField }">
             <FormItem>
               <FormLabel>Profile Picture (Optional)</FormLabel>
               <FormControl>

@@ -24,7 +24,10 @@ const handleLogout = async () => {
     <div class="flex items-center justify-between p-2 rounded-lg bg-gray-50 cursor-pointer">
       <div class="flex items-center gap-3">
         <Avatar class="w-10 h-10">
-          <AvatarImage :src="user?.avatar || ''" :alt="user?.full_name || 'User Avatar'" />
+          <AvatarImage
+            :src="`http://localhost:8000/storage/${user?.image}`"
+            :alt="user?.full_name || 'User Avatar'"
+          />
           <AvatarFallback class="bg-gray-200 text-gray-700">
             {{
               user?.full_name

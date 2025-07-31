@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
 
       return response
     },
-    async register(payload: RegisterData) {
+    async register(payload: FormData) {
       const response = await authApi.register(payload)
       const { data } = response
 

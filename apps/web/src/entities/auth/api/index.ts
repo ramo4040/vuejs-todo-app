@@ -17,10 +17,13 @@ export const authApi = {
       data,
     })
   },
-  async register(data: RegisterData): Promise<GlobalResponse<RegisterResponseData>> {
+  async register(data: FormData): Promise<GlobalResponse<RegisterResponseData>> {
     return apiRequest({
       method: 'POST',
       url: '/auth/register',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
       data,
     })
   },
