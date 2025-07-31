@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Category;
+use App\Services\CategoryService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,13 +13,15 @@ class CategoryController extends Controller
 {
     use AuthorizesRequests;
 
+
+    public function __construct(protected CategoryService $categoryService) {}
+
     /**
      * Display a listing of the user's categories.
      */
     public function index()
     {
-        $categories = Auth::user()->categories()->withCount('todos')->orderBy('todos_count', 'desc')->get();
-
+        $categories = $this->categoryService->getCategoriesWithTodosCount(Auth::user());
         return ApiResponse::success(
             'Categories retrieved successfully',
             200,
@@ -32,9 +35,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate(Category::validationRules());
-
-        $category = Auth::user()->categories()->create($validated)->loadCount('todos');
-
+        $category = $this->categoryService->createCategory(Auth::user(), $validated);
         return ApiResponse::success(
             'Category created successfully',
             201,
@@ -48,15 +49,12 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $this->authorize('update', $category);
-
         $validated = $request->validate(Category::validationRules());
-
-        $category->update($validated);
-
+        $category = $this->categoryService->updateCategory($category, $validated);
         return ApiResponse::success(
             'Category updated successfully',
             200,
-            $category->fresh()->loadCount('todos')
+            $category
         );
     }
 
@@ -66,9 +64,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $this->authorize('delete', $category);
-
-        $category->delete();
-
+        $this->categoryService->deleteCategory($category);
         return ApiResponse::success(
             'Category deleted successfully',
             200
