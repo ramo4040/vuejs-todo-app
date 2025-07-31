@@ -33,7 +33,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validate(Category::validationRules());
 
-        $category = Auth::user()->categories()->create($validated)->withCount('todos');
+        $category = Auth::user()->categories()->create($validated)->loadCount('todos');
 
         return ApiResponse::success(
             'Category created successfully',

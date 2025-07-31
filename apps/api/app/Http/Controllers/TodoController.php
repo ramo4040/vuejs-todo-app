@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TodoCreated;
 use App\Http\Responses\ApiResponse;
 use App\Models\Todo;
 use App\Models\Category;
@@ -49,6 +50,8 @@ class TodoController extends Controller
         ]);
 
         $todo = Auth::user()->todos()->create($data);
+        $todo->load('category');
+        event(new TodoCreated($todo));
 
         return ApiResponse::success(
             'Todo created successfully',
