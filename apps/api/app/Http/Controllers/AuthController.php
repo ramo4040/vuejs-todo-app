@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Http\Responses\ApiResponse;
-use JWTAuth;
+use App\Services\AuthService;
 
 class AuthController extends Controller
 {
+
+    public function __construct(protected AuthService $authService) {}
 
     public function register(Request $request)
     {
@@ -21,85 +22,56 @@ class AuthController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10448',
         ]);
 
-        $user = User::create($data);
-        $token = JWTAuth::fromUser($user);
+        $result = $this->authService->register($data);
 
         return ApiResponse::success(
             'User registered successfully',
             201,
-            [
-                'access_token' => $token,
-                'user' => $user,
-            ]
+            $result
         );
     }
 
-    /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function login()
+    public function login(Request $request)
     {
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only(['email', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
+        $result = $this->authService->login($credentials);
+
+        if (!$result) {
             return ApiResponse::unauthorized('Invalid credentials');
         }
 
         return ApiResponse::success(
             'Login successful',
             200,
-            [
-                'access_token' => $token,
-                'user' => auth()->user(),
-                'token_type' => 'bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60
-            ]
+            $result
         );
     }
 
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function me()
     {
+        $user = $this->authService->me();
         return ApiResponse::success(
             'User profile retrieved successfully',
             200,
-            auth()->user()
+            $user
         );
     }
 
-    /**
-     * Log the user out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function logout()
     {
-        auth()->logout();
-
+        $this->authService->logout();
         return ApiResponse::success('Successfully logged out');
     }
 
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function refresh()
     {
+        $result = $this->authService->refresh();
+
         return ApiResponse::success(
             'Token refreshed successfully',
             200,
-            [
-                'access_token' => auth()->refresh(),
-                'token_type' => 'bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60
-            ]
+            $result
         );
     }
 }
