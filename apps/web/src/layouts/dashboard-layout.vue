@@ -11,7 +11,7 @@ import { storeToRefs } from 'pinia'
 import Skeleton from '@/components/ui/skeleton/Skeleton.vue'
 
 const categoriesStore = useCategoriesStore()
-let { categories, isLoading } = storeToRefs(categoriesStore)
+const { categories, isLoading } = storeToRefs(categoriesStore)
 const { fetchCategories, openDialog, selectCategory } = categoriesStore
 
 onMounted(async () => {
